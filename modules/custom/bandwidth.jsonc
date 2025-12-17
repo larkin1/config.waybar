@@ -1,0 +1,8 @@
+{
+  "custom/bandwidth": {
+    "exec": "~/.config/waybar/scripts/bandwidth.sh",
+    "interval": 1,
+    "tooltip": false,
+    "on-click": "kitty -e ~/.config/waybar/scripts/network.sh"
+  }
+}
