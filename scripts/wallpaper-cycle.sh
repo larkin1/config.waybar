@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Configuration
-WALLPAPER_DIR="$HOME/.config/Wallpapers"  # Directory containing wallpapers
+WALLPAPER_DIR="$HOME/.config/hypr/wallpapers/catppuccin/"  # Directory containing wallpapers
 # MONITOR="HDMI-A-1"                    # Target monitor (replace with your monitor name)
-STATE_FILE="$HOME/.config/Wallpapers/.wallpaper_state" # File to track current wallpaper index
+STATE_FILE="$HOME/.config/hypr/wallpapers/state"  # State file to store current index
 
 # Ensure wallpaper directory exists
 if [ ! -d "$WALLPAPER_DIR" ]; then
