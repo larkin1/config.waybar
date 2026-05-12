@@ -4,6 +4,7 @@
 		"rewrite": {
 			"": "Desktop",
 			"kitty": "Terminal",
+			"ghostty": "Terminal",
 			"zsh": "Terminal",
 			"~": "Terminal"
 		},
