@@ -31,9 +31,10 @@
 		},
 		// "move-to-monitor":
 		// "ignore-workspaces":
-		"on-scroll-up": "hyprctl dispatch workspace +1",
-		"on-scroll-down": "hyprctl dispatch workspace -1",
+    "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({workspace=\"e+1\"})'",
+    "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({workspace=\"e-1\"})'",
 		// "expand":
-		"cursor": true
+		"cursor": true,
+    "on-click": "activate"
 	}
 }
