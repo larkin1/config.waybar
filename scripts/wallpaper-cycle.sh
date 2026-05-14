@@ -2,7 +2,6 @@
 
 # Configuration
 WALLPAPER_DIR="$HOME/.config/hypr/wallpapers/catppuccin/"  # Directory containing wallpapers
-# MONITOR="HDMI-A-1"                    # Target monitor (replace with your monitor name)
 STATE_FILE="$HOME/.config/hypr/wallpapers/state"  # State file to store current index
 
 # Ensure wallpaper directory exists
@@ -23,7 +22,7 @@ fi
 
 MONITOR=$(hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .name')
 if [ -z "$MONITOR" ]; then
-  echo "Could not determine focused monitor!"
+  echo "Could not determine focused monitor! ensure you have JQ installed."
   exit 1
 fi
 
