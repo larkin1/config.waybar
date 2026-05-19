@@ -29,7 +29,7 @@
 		"~/.config/waybar/modules/custom/system_update.jsonc",
 
 		// modules-right
-		"~/.config/waybar/modules/mpris.jsonc",
+		"~/.config/waybar/modules/custom/mpris.jsonc",
 		"~/.config/waybar/modules/pulseaudio.jsonc",
 		"~/.config/waybar/modules/backlight.jsonc",
 		"~/.config/waybar/modules/battery.jsonc",
@@ -80,7 +80,7 @@
 	],
 	"modules-right": [
 		
-		"mpris",
+		"custom/mpris",
 		"custom/left_div#6",
 		"group/pulseaudio",
 		"custom/left_div#7",
