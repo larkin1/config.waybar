@@ -1,21 +1,15 @@
 #!/bin/bash
-
 get_playing_icon() {
   local stat
-  stat="$(playerctl status)"
-  if [[ $stat != 'Playing' ]]; then
+  if [[ $1 != 'Playing' ]]; then
     echo ""
   else
     echo ""
   fi
 }
 
-get_current_player() {
-  playerctl metadata -f "{{playerName}}" 2>/dev/null
-}
-
 get_player_icon() {
-  case "$(get_current_player)" in
+  case "$1" in
     firefox) echo "󰈹" ;;
     spotify) echo "" ;;
     chromium|chrome|google-chrome) echo "" ;;
@@ -29,11 +23,15 @@ get_player_icon() {
 }
 
 get_playing_string() {
-  echo "$(get_player_icon) $(get_playing_icon) $(playerctl metadata -f '{{title}} - {{artist}}')"
-}
+  items="$(playerctl -a metadata -f '{{playerName}}|{{status}}|{{title}} - {{artist}}' 2>/dev/null)"
 
-toggle() {
-  playerctl play-pause
+  playing="$(grep '|Playing|' <<< "$items" | head -n1)"
+
+  [ -n "$playing" ] || playing="$(head -n1 <<< "$items")"
+
+  IFS='|' read -r player stat track <<< "$playing"
+
+  echo "$(get_player_icon "$player") $(get_playing_icon "$stat") $track"
 }
 
 player_menu() {
@@ -78,12 +76,6 @@ player_menu() {
 case "${1:-}" in 
   playing)
     get_playing_string
-    ;;
-  icon)
-    get_playing_icon
-    ;;
-  play)
-    toggle
     ;;
   menu)
     player_menu
