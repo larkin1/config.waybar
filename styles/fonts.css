@@ -1,4 +1,5 @@
 * {
+	/* font-family: "JetBrains Mono SemiBold", "Symbols Nerd Font Mono", monospace; */
 	font-family: "JetBrainsMono Nerd Font";
 	font-weight: bold;
 	font-size: 13px;
@@ -22,8 +23,12 @@ tooltip label {
 }
 
 #custom-left_div,
-#custom-left_inv,
-#custom-right_div,
-#custom-right_inv {
+#custom-right_div {
 	font-size: 18px;
+  margin-top: 0px;
+}
+#custom-left_inv,
+#custom-right_inv {
+	font-size: 18.8px;
+  margin-top: -1px;
 }
