@@ -66,6 +66,9 @@
 	background-color: @accent;
 	color: @main-bg;
 }
+#custom-distro:hover {
+  color: @surface0;
+}
 
 /*--------------------
     idle inhibitor
