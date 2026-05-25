@@ -8,20 +8,6 @@ get_playing_icon() {
   fi
 }
 
-# get_player_icon() {
-#   case "$1" in
-#     firefox) echo "󰈹" ;;
-#     spotify) echo "" ;;
-#     chromium|chrome|google-chrome) echo "" ;;
-#     edge|microsoft-edge|microsoft-edge-beta|microsoft-edge-dev) echo "" ;;
-#     brave-browser|brave) echo "" ;;
-#     vlc) echo "󰕼" ;;
-#     mpv) echo "" ;;
-#     rhythmbox) echo "󰓃";;
-#     *) echo "" ;;
-#   esac
-# }
-
 get_player_icon() {
   case "$1" in
     firefox) echo '<span foreground="#fab387">󰈹</span>' ;;
@@ -41,11 +27,34 @@ get_playing_string() {
 
   playing="$(grep '|Playing|' <<< "$items" | head -n1)"
 
-  [ -n "$playing" ] || playing="$(head -n1 <<< "$items")"
-
-  IFS='|' read -r player stat track <<< "$playing"
+  if [ -n "$playing" ]; then
+    echo "$playing" > "/tmp/waybar-state.mpris"
+    IFS='|' read -r player stat track <<< "$playing"
+  else
+    playing=$(cat "/tmp/waybar-state.mpris")
+    IFS='|' read -r player stat track <<< "$playing"
+    stat="Paused"
+  fi
 
   echo "$(get_player_icon "$player") $(get_playing_icon "$stat") $track"
+}
+
+get_player() {
+  playing=$(cat "/tmp/waybar-state.mpris")
+  IFS='|' read -r player stat track <<< "$playing"
+  echo $player
+}
+
+play_current() {
+  playerctl -p "$(get_player)" play-pause || playerctl play-pause
+}
+
+next_song() {
+  playerctl -p "$(get_player)" next || playerctl next
+}
+
+prev_song() {
+  playerctl -p "$(get_player)" previous || playerctl previous
 }
 
 player_menu() {
@@ -88,12 +97,11 @@ player_menu() {
 }
 
 case "${1:-}" in 
-  playing)
-    get_playing_string
-    ;;
-  menu)
-    player_menu
-    ;;
+  playing) get_playing_string ;;
+  menu) player_menu ;;
+  play) play_current ;;
+  next) next_song ;;
+  prev) prev_song ;;
   *)
     echo "usage: $0 {playing|players|play}" >&2
     exit 1
