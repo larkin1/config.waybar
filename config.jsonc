@@ -109,7 +109,7 @@
 	"margin": 0,
 	// "margin-top":
 	// "margin-left":
-	// "margin-bottom":
+	"margin-bottom": -5,
 	// "margin-right":
 	// "no-center":
 	"spacing": 0,

@@ -9,6 +9,7 @@
 #waybar {
 	background-color: alpha(@outline, 0.0);
 }
+
 #waybar > box {
 	margin: 4px;
 	background-color: alpha(@main-bg, 0.0);
