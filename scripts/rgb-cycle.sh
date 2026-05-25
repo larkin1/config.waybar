@@ -33,7 +33,7 @@ cp -- "$REAL_THEME" "$TMP_THEME"
 rm -f "$REAL_THEME"
 ln -s "$TMP_THEME" "$REAL_THEME"
 
-pkill -USR2 waybar || true
+# pkill -USR2 waybar || true
 
 cleanup() {
     if [[ -f "$BACKUP_THEME" ]]; then
