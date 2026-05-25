@@ -3,7 +3,7 @@
 ----------------*/
 
 #custom-mpris {
-	padding-left: 10px;
+	padding: 0 10px;
 	background-color: @mpris;
 }
 
