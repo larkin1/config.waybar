@@ -7,7 +7,7 @@
 }
 
 #waybar {
-	background-color: alpha(@outline, 0.1);
+	background-color: alpha(@outline, 0.0);
 }
 #waybar > box {
 	margin: 4px;
