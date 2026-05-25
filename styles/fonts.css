@@ -14,20 +14,19 @@ tooltip label {
 /* #workspaces button.active label,
 #workspaces button.focused label, */
 #custom-distro {
-	font-size: 22.5px;
+	font-size: 18px;
 }
 
 #custom-power_menu {
-	font-size: 22.5px;
+	font-size: 18px;
 }
 
 #custom-left_div,
 #custom-right_div {
-	font-size: 22.5px;
-  margin-top: 0px;
+	font-size: 18px;
 }
 #custom-left_inv,
 #custom-right_inv {
-	font-size: 22.5px;
-	margin-top: 0px;
+	font-size: 18.8px;
+  margin-top: -1px;
 }

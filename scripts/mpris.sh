@@ -8,17 +8,31 @@ get_playing_icon() {
   fi
 }
 
+# get_player_icon() {
+#   case "$1" in
+#     firefox) echo "󰈹" ;;
+#     spotify) echo "" ;;
+#     chromium|chrome|google-chrome) echo "" ;;
+#     edge|microsoft-edge|microsoft-edge-beta|microsoft-edge-dev) echo "" ;;
+#     brave-browser|brave) echo "" ;;
+#     vlc) echo "󰕼" ;;
+#     mpv) echo "" ;;
+#     rhythmbox) echo "󰓃";;
+#     *) echo "" ;;
+#   esac
+# }
+
 get_player_icon() {
   case "$1" in
-    firefox) echo "󰈹" ;;
-    spotify) echo "" ;;
-    chromium|chrome|google-chrome) echo "" ;;
-    edge|microsoft-edge|microsoft-edge-beta|microsoft-edge-dev) echo "" ;;
-    brave-browser|brave) echo "" ;;
-    vlc) echo "󰕼" ;;
-    mpv) echo "" ;;
-    rhythmbox) echo "󰓃";;
-    *) echo "" ;;
+    firefox) echo '<span foreground="#fab387">󰈹</span>' ;;
+    spotify) echo '<span foreground="#a6e3a1"></span>' ;;
+    chromium|chrome|google-chrome) echo '<span foreground="#94e2d5"></span>' ;;
+    edge|microsoft-edge|microsoft-edge-beta|microsoft-edge-dev) echo '<span foreground="#74c7ec"></span>' ;;
+    brave-browser|brave) echo '<span foreground="#f38ba8"></span>' ;;
+    vlc) echo '<span foreground="#fab387">󰕼</span>' ;;
+    mpv) echo '<span foreground="#cba6f7"></span>' ;;
+    rhythmbox) echo '<span foreground="#f9e2af">󰓃</span>' ;;
+    *) echo '' ;;
   esac
 }
 
