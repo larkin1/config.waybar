@@ -45,7 +45,7 @@
 
 /* module colors */
 
-@define-color workspaces    @mantle;
+@define-color workspaces    @base;
 @define-color temperature   @mantle;
 @define-color memory        @base;
 @define-color cpu           @surface0;
@@ -55,6 +55,7 @@
 @define-color volume        @mantle;
 @define-color backlight     @base;
 @define-color battery       @surface0;
+@define-color mpris         @mantle;
 
 /* state colors */
 

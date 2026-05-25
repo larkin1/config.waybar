@@ -1,3 +1,12 @@
+/*----------------
+    media info
+----------------*/
+
+#custom-mpris {
+	padding-left: 10px;
+	background-color: @mpris;
+}
+
 /*--------------
     username
 --------------*/
@@ -10,12 +19,20 @@
     workspaces
 ----------------*/
 
+#custom-right_div.1 {
+	background-color: @mpris;
+}
+
+#custom-right_div.6 {
+  color: @mpris;
+}
+
 #custom-left_div.1,
 #custom-right_div.1 {
 	color: @workspaces;
 }
 #workspaces {
-	padding: 0 1px;
+	padding: 0 2px;
 	background-color: @workspaces;
 }
 #workspaces button.active label,
@@ -23,6 +40,9 @@
 	color: @accent;
 }
 
+#workspaces button:hover {
+	background-color: @surface0;
+}
 /*------------------
     window title
 ------------------*/

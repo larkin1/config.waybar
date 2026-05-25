@@ -4,7 +4,7 @@
 #network:hover,
 #bluetooth:hover,
 #custom-system_update:hover,
-#mpris:hover,
+#custom-mpris:hover,
 #pulseaudio:hover,
 #wireplumber:hover {
 	color: @hover-fg;
