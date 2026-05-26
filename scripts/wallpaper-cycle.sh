@@ -2,7 +2,7 @@
 
 # Configuration
 WALLPAPER_DIR="$HOME/.config/hypr/wallpapers/catppuccin/"  # Directory containing wallpapers
-STATE_FILE="$HOME/.config/hypr/wallpapers/state"  # State file to store current index
+STATE_FILE="/tmp/waybar-state.wallpaper"
 
 # Ensure wallpaper directory exists
 if [ ! -d "$WALLPAPER_DIR" ]; then
