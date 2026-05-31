@@ -72,13 +72,6 @@ player_menu() {
   lx=$((lx - 1))
   ly=$((ly - 35))
   
-  echo $cx
-  echo $cy
-  echo $lx
-  echo $ly
-  echo $mx
-  echo $my
-
   chosen="$(
     playerctl -l 2>/dev/null | sort -u | \
       fuzzel --dmenu \

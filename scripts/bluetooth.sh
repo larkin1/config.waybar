@@ -1,119 +1,137 @@
 #!/usr/bin/env bash
-#
-# Scan, select, pair, and connect to Bluetooth devices
-#
-# Requirements:
-# 	- bluetoothctl (bluez-utils)
-# 	- fzf
-# 	- notify-send (libnotify)
-#
-# Author: Jesse Mirabel <sejjymvm@gmail.com>
-# Created: August 19, 2025
-# License: MIT
+set -uo pipefail
+width=50
 
-fcconf=()
-# Get fzf color config
-# shellcheck disable=SC1090,SC2154
-. ~/.config/waybar/scripts/_fzf-colorizer.sh 2> /dev/null || true
-# If the file is missing, fzf will fall back to its default colors
+connect_menu() {
+  if ! bluetoothctl show | grep "PowerState: on"; then
+    notify-send "Bluetooth menu" "Bluetooth off, unable to start"
+    exit 1
+  fi
 
-RED='\033[1;31m'
-RST='\033[0m'
+  opt=""
+  cx=$(hyprctl -j cursorpos | jq -r '[.x] | @tsv')
+  cy=$(hyprctl -j cursorpos | jq -r '[.y] | @tsv')
 
-TIMEOUT=10
+  read -r mx my < <(
+    hyprctl -j monitors |
+      jq -r '.[] | select(.focused == true) | "\(.x) \(.y)"'
+  )
 
-ensure-on() {
-	local status
-	status=$(bluetoothctl show | grep PowerState | awk '{print $2}')
-	if [[ $status == 'off' ]]; then
-		bluetoothctl power on > /dev/null
-		notify-send 'Bluetooth On' -i 'network-bluetooth-activated' -r 1925
-	fi
+  lx=$((cx - mx))
+  ly=$((cy - my))
+
+  lx=$((lx - 1))
+  ly=$((ly - 35))
+
+  while [ -z "$opt" ]; do
+    opt=$(
+      printf "search\nconnect existing" | fuzzel --dmenu \
+      --anchor=top-left \
+      --x-margin="$lx" \
+      --y-margin="$ly" \
+      --prompt="Action: " \
+      --placeholder="Choose an option..." \
+      --lines=10 \
+      --minimal-lines \
+      --width=$width
+    )
+    if [ -z "$opt" ]; then
+      notify-send "Bluetooth menu exiting" "Reason: User aborted"
+      exit 0
+    fi
+
+    case "$opt" in
+      search)
+        conn="$(
+          {
+            bluetoothctl devices \
+              | sed -u 's/\x1b\[[0-9;]*m//g' \
+              | grep -oP 'Device\s+\K[0-9A-F:]{17}\s+.+'
+            bluetoothctl --timeout 10 scan on \
+              | sed -u 's/\x1b\[[0-9;]*m//g' \
+              | grep --line-buffered -oP '\[NEW\]\s+Device\s+\K[0-9A-F:]{17}\s+.+'
+          } | fuzzel --dmenu \
+            --anchor=top-left \
+            --x-margin="$lx" \
+            --y-margin="$ly" \
+            --prompt="Select a device: " \
+            --placeholder="Select to connect..." \
+            --lines=10 \
+            --width=$width
+        )" || exit 0
+        [ -z "$conn" ] && exit 0
+
+        mac=$(echo "$conn" | awk '{print $1}')
+
+        if bluetoothctl info "$mac" | grep -q "Connected: yes"; then
+          notify-send "Bluetooth menu" "Device already connected. exiting..."
+          exit 0
+        fi
+
+        if bluetoothctl connect "$mac"; then
+          notify-send "Bluetooth menu" "Connected to $conn"
+        else
+          notify-send "Bluetooth menu error" "Failed to connect to $conn"
+        fi
+      ;;
+      "connect existing")
+        devices=$(
+          bluetoothctl devices 2>/dev/null |
+            grep -oP '[0-9A-F:]{17} .+' |
+            sort -u
+        )
+        if [ -z "$devices" ]; then
+          notify-send "Bluetooth menu error" "No saved devices found"
+          exit 0
+        fi
+        conn=$(
+          echo "$devices" | fuzzel --dmenu \
+            --anchor=top-left \
+            --x-margin="$lx" \
+            --y-margin="$ly" \
+            --prompt="Select a device: " \
+            --placeholder="Select to connect..." \
+            --lines=10 \
+            --minimal-lines \
+            --width=$width
+        )
+        mac=$(echo "$conn" | awk '{print $1}')
+
+        if bluetoothctl info "$mac" | grep -q "Connected: yes"; then
+          notify-send "Bluetooth menu" "Device already connected. exiting..."
+          exit 0
+        fi
+
+        notify-send "Bluetooth Menu" "Attempting to connect to $conn"
+        if bluetoothctl connect "$mac"; then
+          notify-send "Bluetooth menu" "Connected to $conn"
+        else
+          notify-send "Bluetooth menu error" "Failed to connect to $conn"
+        fi
+      ;;
+      *)
+        notify-send "Bluetooth menu error" "Incorrect action"
+        opt=""
+      ;;
+    esac
+  done
 }
 
-get-device-list() {
-	bluetoothctl --timeout $TIMEOUT scan on > /dev/null &
-
-	local i num
-	for ((i = 1; i <= TIMEOUT; i++)); do
-		printf '\rScanning for devices... (%d/%d)' $i $TIMEOUT
-		printf '\n%bPress [q] to stop%b\n\n' "$RED" "$RST"
-
-		num=$(bluetoothctl devices | grep -c Device)
-		printf '\rDevices: %s' "$num"
-		printf '\033[3A'
-
-		read -rs -n 1 -t 1
-		if [[ $REPLY == [Qq] ]]; then
-			break
-		fi
-	done
-	printf '\n%bScanning stopped.%b\n\n' "$RED" "$RST"
-
-	list=$(bluetoothctl devices | grep Device | cut -d ' ' -f 2-)
-	if [[ -z $list ]]; then
-		notify-send 'Bluetooth' 'No devices found' -i 'package-broken'
-		return 1
-	fi
+power_toggle() {
+  if bluetoothctl show | grep "PowerState: on"; then
+    bluetoothctl power off
+    notify-send "Bluetooth" "Power State changed to: off"
+  else
+    bluetoothctl power on
+    notify-send "Bluetooth" "Power State changed to: on"
+  fi
 }
 
-select-device() {
-	local header
-	header=$(printf '%-17s %s' 'Address' 'Name')
-	local opts=(
-		'--border=sharp'
-		'--border-label= Bluetooth Devices '
-		'--ghost=Search'
-		"--header=$header"
-		'--height=~100%'
-		'--highlight-line'
-		'--info=inline-right'
-		'--pointer='
-		'--reverse'
-		"${fcconf[@]}"
-	)
-
-	address=$(fzf "${opts[@]}" <<< "$list" | awk '{print $1}')
-	if [[ -z $address ]]; then
-		return 1
-	fi
-
-	local connected
-	connected=$(bluetoothctl info "$address" | grep Connected |
-		awk '{print $2}')
-	if [[ $connected == 'yes' ]]; then
-		notify-send 'Bluetooth' 'Already connected to this device' \
-			-i 'package-install'
-		return 1
-	fi
-}
-
-pair-and-connect() {
-	local paired
-	paired=$(bluetoothctl info "$address" | grep Paired | awk '{print $2}')
-	if [[ $paired == 'no' ]]; then
-		printf 'Pairing...'
-		if ! timeout $TIMEOUT bluetoothctl pair "$address" > /dev/null; then
-			notify-send 'Bluetooth' 'Failed to pair' -i 'package-purge'
-			return 1
-		fi
-	fi
-
-	printf '\nConnecting...'
-	if ! timeout $TIMEOUT bluetoothctl connect "$address" > /dev/null; then
-		notify-send 'Bluetooth' 'Failed to connect' -i 'package-purge'
-		return 1
-	fi
-	notify-send 'Bluetooth' 'Successfully connected' -i 'package-install'
-}
-
-main() {
-	tput civis
-	ensure-on
-	get-device-list || exit 1
-	tput cnorm
-	select-device || exit 1
-	pair-and-connect || exit 1
-}
-
-main
+case "${1:-}" in 
+  menu) connect_menu ;;
+  power_toggle) power_toggle ;;
+  *)
+    echo "usage: $0 {menu|power_toggle}" >&2
+    exit 1
+    ;;
+esac

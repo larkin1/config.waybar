@@ -14,6 +14,13 @@ fi
 WALLPAPERS=($(ls "$WALLPAPER_DIR" | grep -E '^[0-9]+\.png$' | sort -n))
 TOTAL_WALLPAPERS=${#WALLPAPERS[@]}
 
+walls=$(ls "$WALLPAPER_DIR")
+if [ -z $walls ]; then
+  echo "No wallpapers found in $WALLPAPER_DIR!"
+  exit 1
+fi
+
+
 # Check if there are any wallpapers
 if [ $TOTAL_WALLPAPERS -eq 0 ]; then
   echo "No wallpapers found in $WALLPAPER_DIR!"
