@@ -24,7 +24,6 @@
 		"~/.config/waybar/modules/custom/distro.jsonc",
 		"~/.config/waybar/modules/idle_inhibitor.jsonc",
 		"~/.config/waybar/modules/clock.jsonc",
-		"~/.config/waybar/modules/network.jsonc",
 		"~/.config/waybar/modules/bluetooth.jsonc",
 
 		// modules-right
@@ -73,7 +72,6 @@
 		"custom/right_div#3",
 		"clock#date",
 		"custom/right_div#4",
-		"network",
 		"bluetooth",
 		"custom/right_div#5"
 	],
