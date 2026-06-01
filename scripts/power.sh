@@ -17,7 +17,7 @@ menu() {
   ly=$((cy - my))
 
   lx=$((lx - $width*8 - 10))
-  ly=$((ly - 35))
+  ly=$((ly - 25))
 
   while [ -z "$opt" ]; do
     opt=$(

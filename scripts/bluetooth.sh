@@ -21,7 +21,7 @@ connect_menu() {
   ly=$((cy - my))
 
   lx=$((lx - 1))
-  ly=$((ly - 35))
+  ly=$((ly - 25))
 
   while [ -z "$opt" ]; do
     opt=$(
