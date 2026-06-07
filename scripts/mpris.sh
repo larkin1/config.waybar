@@ -24,6 +24,10 @@ get_player_icon() {
 
 get_playing_string() {
   items="$(playerctl -a metadata -f '{{playerName}}|{{status}}|{{markup_escape(title)}} - {{markup_escape(artist)}}' 2>/dev/null)"
+  if [ $? -ne 0 ]; then
+    echo ""
+    exit 0
+  fi
 
   playing="$(grep '|Playing|' <<< "$items" | head -n1)"
 
