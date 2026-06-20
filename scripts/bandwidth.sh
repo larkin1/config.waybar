@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 iface=$(ip route | awk '/default/ {print $5; exit}')
 
 rx1=$(cat /sys/class/net/$iface/statistics/rx_bytes)

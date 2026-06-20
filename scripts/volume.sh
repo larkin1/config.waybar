@@ -3,10 +3,10 @@
 # Adjust default device volume and send a notification with the current level
 #
 # Requirements:
-# 	- pactl (libpulse)
-# 	- notify-send (libnotify)
+# 	- wpctl (pipeWire)
 #
 # Author: Jesse Mirabel <sejjymvm@gmail.com>
+# Modified to wpctl by: larkin1@github
 # Created: September 07, 2025
 # License: MIT
 
@@ -46,18 +46,18 @@ print-usage() {
 
 check-muted() {
 	local muted
-	muted=$(pactl "get-$dev_mute" "$dev" | awk '{print $2}')
+	muted=$(wpctl "get-volume" "$dev" | awk '{print $3}')
 	local state
 	case $muted in
-		'yes') state='Muted' ;;
-		'no') state='Unmuted' ;;
+		'[MUTED]') state='Muted' ;;
+		*) state='Unmuted' ;;
 	esac
 
 	echo "$state"
 }
 
 get-volume() {
-	pactl "get-$dev_vol" "$dev" | awk '{print $5}' | tr -d '%'
+  wpctl "get-volume" "$dev" | awk '{print $2}' | awk '{printf "%.0f",$1*100}'
 }
 
 get-icon() {
@@ -80,8 +80,7 @@ get-icon() {
 }
 
 toggle-mute() {
-	pactl "set-$dev_mute" "$dev" toggle
-	# notify-send "$title: $(check-muted)" -i "$(get-icon)" -r 2425
+	wpctl "set-mute" "$dev" toggle
 }
 
 set-volume() {
@@ -100,12 +99,10 @@ set-volume() {
 			;;
 	esac
 
-	pactl "set-$dev_vol" "$dev" "${new_vol}%"
+	wpctl "set-volume" "$dev" "${new_vol}%"
 
 	local icon
 	icon=$(get-icon "$new_vol")
-
-	# notify-send "$title: ${new_vol}%" -h int:value:$new_vol -i "$icon" -r 2425
 }
 
 main() {
@@ -118,15 +115,11 @@ main() {
 	case $device in
 		'input')
 			dev='@DEFAULT_SOURCE@'
-			dev_mute='source-mute'
-			dev_vol='source-volume'
 			dev_icon='mic-volume'
 			title='Microphone'
 			;;
 		'output')
 			dev='@DEFAULT_SINK@'
-			dev_mute='sink-mute'
-			dev_vol='sink-volume'
 			dev_icon='audio-volume'
 			title='Volume'
 			;;

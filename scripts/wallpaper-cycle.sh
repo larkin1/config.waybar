@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 WALLPAPER_DIR="$HOME/.config/hypr/wallpapers/catppuccin/"
 STATE_FILE="/tmp/waybar-state.wallpaper"
 
