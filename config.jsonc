@@ -83,7 +83,7 @@
 		// "backlight",
 		"custom/bandwidth",
 		"custom/left_div#8",
-		// "battery",
+		"battery",
 		"tray",
 		"custom/left_inv#2",
 		"custom/power_menu"
