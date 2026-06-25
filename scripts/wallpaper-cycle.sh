@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-WALLPAPER_DIR="$HOME/.config/hypr/wallpapers/catppuccin/"
+WALLPAPER_DIR="$HOME/.config/wallpapers/catppuccin/"
 STATE_FILE="/tmp/waybar-state.wallpaper"
 
 walls=$(ls "$WALLPAPER_DIR")
